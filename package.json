@@ -4,8 +4,13 @@
   "description": "2D Spatial Partitioning",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "browserify --standalone SpatialPartition src/spatialPartition.js -o dist/spatialPartition.js && mocha"
   },
   "author": "Adrian Hecker",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "browserify": "^14.0.0",
+    "mocha": "^3.2.0",
+    "uglify-js": "^2.7.5"
+  }
 }

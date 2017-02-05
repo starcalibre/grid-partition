@@ -41,6 +41,9 @@ SpatialPartition.prototype.add = function(entity) {
 };
 
 SpatialPartition.prototype.addAll = function(entities) {
+    entities.forEach(function(entity) {
+        this.add(entity);
+    }.bind(this));
 };
 
 SpatialPartition.prototype.getCell = function(cellX, cellY) {
@@ -50,6 +53,12 @@ SpatialPartition.prototype.getCell = function(cellX, cellY) {
     }
     // otherwise assume individual accessors were passed
     return this._cells[cellY][cellX];
+};
+
+SpatialPartition.prototype.getCellByEntity = function(entity) {
+    var query = this._entityMap[entity];
+    if(!query) return null;
+    return this.getCell(query);
 };
 
 SpatialPartition.prototype.move = function(entity, x, y) {

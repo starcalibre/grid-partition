@@ -129,4 +129,79 @@ describe('SpatialPartition', function() {
             assert.deepEqual(actual, expected);
         });
     });
+    
+    describe('addAll', function() {
+        it('adds multiple entities', function() {
+            var grid = new SpatialPartition();
+
+            // expect both of these be assigned to grid [1, 6]
+            var testEntity1 = {
+                name: 'Charlotte The Entity',
+                x: 15,
+                y: 65
+            };
+            var testEntity2 = {
+                name: 'Harry The Entity',
+                x: 15,
+                y: 65
+            };
+
+            var entities = [testEntity1, testEntity2];
+            grid.addAll(entities);
+            var actual = grid.getCell(1, 6).length;
+            var expected = 2;
+            assert.strictEqual(actual, expected);
+        });
+    })
+    
+    describe('getCell', function() {
+        var grid;
+        var testEntity = {
+            name: 'Alice The Entity',
+            x: 0,
+            y: 51
+        };
+        
+        beforeEach(function() {
+            grid = new SpatialPartition();
+            grid.add(testEntity);
+        });
+
+        it('gets expected cell using two parameters', function() {
+            var actual = grid.getCell(0, 5);
+            var expected = [testEntity];
+            assert.deepEqual(actual, expected);
+        });
+
+        it('gets expected cell using a single parameter', function() {
+            var actual = grid.getCell([0, 5]);
+            var expected = [testEntity];
+            assert.deepEqual(actual, expected);
+        })
+    });
+    
+    describe('getCellByEntity', function() {
+        it('returns the expected cell by the given entity', function() {
+            var grid = new SpatialPartition();
+
+            // both entities will reside in [0, 5]
+            var testEntity = {
+                name: 'Alice The Entity',
+                x: 0,
+                y: 51
+            };
+            var testEntity2 = {
+                name: 'Bob The Entity',
+                x: 2,
+                y: 51
+            };
+
+            grid.add(testEntity);
+            grid.add(testEntity2);
+
+            var expected = [testEntity, testEntity2];
+            var actual = grid.getCellByEntity(testEntity2);
+            assert.deepEqual(actual, expected);
+        });
+    });
 });

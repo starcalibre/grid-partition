@@ -81,7 +81,18 @@ SpatialPartition.prototype.move = function(entity, x, y) {
 };
 
 SpatialPartition.prototype.remove = function(entity) {
-    // remove an entity
+    if(!this._entityMap[entity]) return false;
+
+    // remove entity from cell
+    var cellCoord = this._entityMap[entity];
+    var cell = this.getCell(cellCoord);
+    var index = cell.indexOf(entity);
+    cell.splice(index, 1);
+
+    // remove entity from hash-map
+    delete this._entityMap[entity];
+
+    return true;
 };
 
 SpatialPartition.prototype.x = function(_) {

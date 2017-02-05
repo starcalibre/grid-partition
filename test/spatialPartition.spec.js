@@ -288,4 +288,55 @@ describe('SpatialPartition', function() {
             assert.deepEqual(actual, expected);
         });
     });
+
+    describe('remove', function() {
+        it('removes elements as expected', function() {
+            var grid = new SpatialPartition();
+
+            // both entities will reside in [0, 5]
+            var testEntity = {
+                name: 'Alice The Entity',
+                x: 0,
+                y: 51
+            };
+            var testEntity2 = {
+                name: 'Bob The Entity',
+                x: 2,
+                y: 51
+            };
+
+            grid.addAll([testEntity, testEntity2]);
+            var lol = grid.remove(testEntity);
+
+            var actual = [testEntity2];
+            var expected = grid.getCell(0, 5);
+            assert.deepEqual(actual, expected);
+        });
+        
+        it('returns true on successful removal', function() {
+            var grid = new SpatialPartition(200, 200, 5, 5);
+
+            var testEntity = {
+                name: 'Rostislav The Entity',
+                x: 37,
+                y: 199
+            };
+
+            grid.add(testEntity);
+            var actual = grid.remove(testEntity);
+            assert.equal(actual, true);
+        });
+
+        it('returns false on failed removal', function() {
+            var grid = new SpatialPartition();
+            var testEntity = {
+                name: 'Bobby the Entity',
+                x: 12,
+                y: 67
+            };
+
+            var actual = grid.remove(testEntity);
+            assert.equal(actual, false);
+        });
+    });
 });

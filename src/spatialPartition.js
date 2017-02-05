@@ -61,6 +61,21 @@ SpatialPartition.prototype.getCellByEntity = function(entity) {
     return this.getCell(query);
 };
 
+SpatialPartition.prototype.getCellByWorldCoord = function(posX, posY) {
+    var cellX, cellY;
+
+    // assume length 2 array passed
+    if(!posY) {
+        cellX = Math.floor(posX[0] / this.cellWidth);
+        cellY = Math.floor(posX[1] / this.cellHeight);
+    }
+    else {
+        cellX = Math.floor(posX / this.cellWidth);
+        cellY = Math.floor(posY / this.cellHeight);
+    }
+    return this.getCell(cellX, cellY);
+};
+
 SpatialPartition.prototype.move = function(entity, x, y) {
     // move an entity
 };

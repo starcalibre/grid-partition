@@ -204,4 +204,88 @@ describe('SpatialPartition', function() {
             assert.deepEqual(actual, expected);
         });
     });
+    
+    describe('getCellByWorldCoord', function() {
+        it('returns the expected entity from world co-ordinates', function() {
+            var grid = new SpatialPartition();
+
+            var testEntity = {
+                name: 'Alice The Entity',
+                x: 0,
+                y: 51
+            };
+
+            var testEntity2 = {
+                name: 'John The Entity',
+                x: 2,
+                y: 50
+            };
+
+            var testEntity3 = {
+                name: 'Magda The Entity',
+                x: 15,
+                y: 61
+            };
+
+            grid.addAll([testEntity, testEntity2, testEntity3]);
+            var actual = grid.getCellByWorldCoord(3, 52);
+            var expected = [testEntity, testEntity2];
+            assert.deepEqual(actual, expected);
+        });
+
+        it('returns expected entities from world co-ordinates (custom params)', function() {
+            var grid = new SpatialPartition(312, 450, 10, 15);
+
+            // expect first two to map to 2, 2
+            var testEntity1 = {
+                name: 'Arif The Entity',
+                x: 65,
+                y: 60
+            };
+
+            var testEntity2 = {
+                name: 'Symeon The Entity',
+                x: 68,
+                y: 61
+            };
+
+            var testEntity3 = {
+                name: 'Yorick The Entity',
+                x: 33,
+                y: 29
+            };
+
+            grid.addAll([testEntity1, testEntity2, testEntity3]);
+            var expected = [testEntity1, testEntity2];
+            var actual = grid.getCellByWorldCoord(64, 62);
+            assert.deepEqual(actual, expected);
+        });
+
+        it('works as expected whe [x, y] array passed', function() {
+            var grid = new SpatialPartition();
+
+            var testEntity = {
+                name: 'Alice The Entity',
+                x: 0,
+                y: 51
+            };
+
+            var testEntity2 = {
+                name: 'John The Entity',
+                x: 2,
+                y: 50
+            };
+
+            var testEntity3 = {
+                name: 'Magda The Entity',
+                x: 15,
+                y: 61
+            };
+
+            grid.addAll([testEntity, testEntity2, testEntity3]);
+            var actual = grid.getCellByWorldCoord([1, 52]);
+            var expected = [testEntity, testEntity2];
+            assert.deepEqual(actual, expected);
+        });
+    });
 });

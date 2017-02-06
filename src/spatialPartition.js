@@ -1,5 +1,5 @@
 'use strict';
-var Map = require('collections/map');
+var Map = require('collections/weak-map');
 var isNullOrUndefined = require('./util').isNullOrUndefined;
 var mod = require('./util').mod;
 
@@ -36,8 +36,8 @@ function SpatialPartition(width, height, numberCellsX, numberCellsY) {
 }
 
 SpatialPartition.prototype.add = function(entity) {
-    var posX = Math.round(this._x.call(null, entity));
-    var posY = Math.round(this._y.call(null, entity));
+    var posX = Math.floor(this._x.call(null, entity));
+    var posY = Math.floor(this._y.call(null, entity));
     var cellX = Math.floor(posX / this.cellWidth);
     var cellY = Math.floor(posY / this.cellHeight);
 
@@ -52,9 +52,7 @@ SpatialPartition.prototype.addAll = function(entities) {
 };
 
 SpatialPartition.prototype.getCell = function(cellX, cellY) {
-    if(cellX < 0 || cellY < 0 || cellX > this.numberCellsX || cellY > this.numberCellsY) {
-        return null;
-    }
+    if(!this._isCellValid(cellX, cellY)) return null;
     // otherwise assume individual accessors were passed
     return this._cells[cellY][cellX];
 };
@@ -62,9 +60,6 @@ SpatialPartition.prototype.getCell = function(cellX, cellY) {
 SpatialPartition.prototype.getCellByWorldCoord = function(posX, posY) {
     var cellX = Math.floor(posX / this.cellWidth);
     var cellY = Math.floor(posY / this.cellHeight);
-    if(cellX < 0 || cellY < 0 || cellX > this.numberCellsX || cellY > this.numberCellsY) {
-        return null;
-    }
     return this.getCell(cellX, cellY);
 };
 
@@ -94,8 +89,8 @@ SpatialPartition.prototype.getNeighbourhood = function(cellX, cellY, radius, wra
 };
 
 SpatialPartition.prototype.getNeighbourhoodByWorldCoord = function(posX, posY, radius) {
-    var cellX = Math.floor(posX / this.cellWidth);
-    var cellY = Math.floor(posY / this.cellHeight);
+    var cellX = Math.floor(Math.floor(posX) / this.cellWidth);
+    var cellY = Math.floor(Math.floor(posY) / this.cellHeight);
     return this.getNeighbourhood(cellX, cellY, radius);
 };
 
@@ -143,6 +138,10 @@ SpatialPartition.prototype.y = function(_) {
         return this;
     }
     return this._y;
+};
+
+SpatialPartition.prototype._isCellValid = function(cellX, cellY) {
+    return (cellX >= 0 && cellY >= 0 && cellX < this.numberCellsX && cellY < this.numberCellsY);
 };
 
 module.exports = SpatialPartition;

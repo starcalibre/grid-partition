@@ -649,6 +649,26 @@ describe('SpatialPartition', function() {
             assert.deepEqual(actual, expected);
         });
     });
+
+    describe('_isCellValid', function() {
+        var grid;
+
+        beforeEach(function() {
+            grid = new SpatialPartition();
+        });
+
+        it('returns true when cell valid', function() {
+            var actual = grid._isCellValid(2, 3);
+            var expected = true;
+            assert.equal(actual, expected);
+        });
+
+        it('returns false when cell invalid', function() {
+            var actual = grid._isCellValid(-1, -1);
+            var expected = false;
+            assert.equal(actual, expected);
+        });
+    });
 });
 
 describe('Utils', function() {

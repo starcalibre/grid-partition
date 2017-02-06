@@ -1,4 +1,5 @@
 'use strict';
+var Map = require('collections/map');
 
 function SpatialPartition(width, height, numberCellsX, numberCellsY) {
     this.width = width || 100;
@@ -27,7 +28,7 @@ function SpatialPartition(width, height, numberCellsX, numberCellsY) {
     }
 
     // map of entity references to cell co-ordinates
-    this._entityMap = {};
+    this._entityMap = new Map();
 }
 
 SpatialPartition.prototype.add = function(entity) {
@@ -37,7 +38,7 @@ SpatialPartition.prototype.add = function(entity) {
     var cellY = Math.floor(posY / this.cellHeight);
 
     this._cells[cellY][cellX].push(entity);
-    this._entityMap[entity] = [cellX, cellY];
+    this._entityMap.set(entity, [cellX, cellY]);
 };
 
 SpatialPartition.prototype.addAll = function(entities) {
@@ -48,7 +49,7 @@ SpatialPartition.prototype.addAll = function(entities) {
 
 SpatialPartition.prototype.getCell = function(cellX, cellY) {
     // assume length-2 array was passed
-    if(!cellY) {
+    if(cellY == null || cellY == undefined) {
         return this._cells[cellX[1]][cellX[0]]
     }
     // otherwise assume individual accessors were passed
@@ -56,8 +57,8 @@ SpatialPartition.prototype.getCell = function(cellX, cellY) {
 };
 
 SpatialPartition.prototype.getCellByEntity = function(entity) {
-    var query = this._entityMap[entity];
-    if(!query) return null;
+    var query = this._entityMap.get(entity);
+    if(nullOrUndefined(query)) return null;
     return this.getCell(query);
 };
 
@@ -65,7 +66,7 @@ SpatialPartition.prototype.getCellByWorldCoord = function(posX, posY) {
     var cellX, cellY;
 
     // assume length 2 array passed
-    if(!posY) {
+    if(posY === null || posY === undefined) {
         cellX = Math.floor(posX[0] / this.cellWidth);
         cellY = Math.floor(posX[1] / this.cellHeight);
     }
@@ -76,15 +77,26 @@ SpatialPartition.prototype.getCellByWorldCoord = function(posX, posY) {
     return this.getCell(cellX, cellY);
 };
 
-SpatialPartition.prototype.move = function(entity, x, y) {
-    // move an entity
+SpatialPartition.prototype.update = function(entity) {
+    // remove the entity
+    if(!this.remove(entity)) return false;
+
+    // now add it again!
+    this.add(entity);
+    return true;
+};
+
+SpatialPartition.prototype.updateAll = function(entities) {
+    entities.forEach(function(entity) {
+        this.update(entity);
+    }.bind(this));
 };
 
 SpatialPartition.prototype.remove = function(entity) {
-    if(!this._entityMap[entity]) return false;
+    var cellCoord = this._entityMap.get(entity);
+    if(nullOrUndefined(cellCoord)) return false;
 
     // remove entity from cell
-    var cellCoord = this._entityMap[entity];
     var cell = this.getCell(cellCoord);
     var index = cell.indexOf(entity);
     cell.splice(index, 1);
@@ -110,5 +122,9 @@ SpatialPartition.prototype.y = function(_) {
     }
     return this._y;
 };
+
+function nullOrUndefined(value) {
+    return value == null || value == undefined;
+}
 
 module.exports = SpatialPartition;

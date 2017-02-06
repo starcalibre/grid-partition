@@ -124,7 +124,7 @@ describe('SpatialPartition', function() {
             };
 
             grid.add(testEntity);
-            var actual = grid._entityMap[testEntity];
+            var actual = grid._entityMap.get(testEntity);
             var expected = [7, 7];
             assert.deepEqual(actual, expected);
         });
@@ -152,7 +152,7 @@ describe('SpatialPartition', function() {
             var expected = 2;
             assert.strictEqual(actual, expected);
         });
-    })
+    });
     
     describe('getCell', function() {
         var grid;
@@ -339,4 +339,95 @@ describe('SpatialPartition', function() {
             assert.equal(actual, false);
         });
     });
+    
+    describe('update', function() {
+        it('updates the entity as expected', function() {
+            var grid = new SpatialPartition();
+
+            // will be in [0, 5] initially
+            var testEntity = {
+                name: 'Alice The Entity',
+                x: 0,
+                y: 51
+            };
+
+            grid.add(testEntity);
+            testEntity.x = 13;
+            testEntity.y = 65; // should be in [1, 6] with new position
+            grid.update(testEntity);
+
+            var actual = grid.getCell(1, 6);
+            var expected = [testEntity];
+            assert.deepEqual(actual, expected);
+        });
+        
+        it('returns true on successful update', function() {
+            var grid = new SpatialPartition();
+
+            // will be in [0, 5] initially
+            var testEntity = {
+                name: 'Alice The Entity',
+                x: 0,
+                y: 51
+            };
+
+            grid.add(testEntity);
+            testEntity.x = 13;
+            testEntity.y = 65; // should be in [1, 6] with new position
+            var updated = grid.update(testEntity);
+
+            assert.equal(updated, true);
+        });
+        
+        it('returns false on failed update', function() {
+            var grid = new SpatialPartition();
+
+            var testEntity = {
+                name: 'Cirillo The Entity',
+                x: 99,
+                y: 56
+            };
+
+            var updated = grid.update(testEntity);
+            assert.equal(updated, false);
+        });
+    });
+    
+    describe('updateAll', function() {
+        it('updates multiple entities as expected', function() {
+            var grid = new SpatialPartition(800, 600, 16, 12);
+
+            // test will be assigned to [0, 0]
+            var testEntity1 = {
+                name: 'Ivan The Entity',
+                x: 10,
+                y: 10
+            };
+
+            var testEntity2 = {
+                name: 'Vlad The Entity',
+                x: 12,
+                y: 12
+            };
+
+            grid.addAll([testEntity1, testEntity2]);
+
+            // after update these will be assigned to [1, 2]
+            testEntity1.x = 55;
+            testEntity1.y = 102;
+            testEntity2.x = 52;
+            testEntity2.y = 110;
+
+            grid.updateAll([testEntity1, testEntity2]);
+
+            var actual = grid.getCell(1, 2);
+            var expected = [testEntity1, testEntity2];
+
+            assert.deepEqual(actual, expected);
+        });
+    });
+});
+
+describe('Miscellaneous', function() {
+
 });

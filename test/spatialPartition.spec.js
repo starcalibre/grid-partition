@@ -169,17 +169,11 @@ describe('SpatialPartition', function() {
             grid.add(testEntity);
         });
 
-        it('gets expected cell using two parameters', function() {
+        it('gets expected cell', function() {
             var actual = grid.getCell(0, 5);
             var expected = [testEntity];
             assert.deepEqual(actual, expected);
         });
-
-        it('gets expected cell using a single parameter', function() {
-            var actual = grid.getCell([0, 5]);
-            var expected = [testEntity];
-            assert.deepEqual(actual, expected);
-        })
     });
 
     describe('getCellByWorldCoord', function() {
@@ -235,33 +229,6 @@ describe('SpatialPartition', function() {
             grid.addAll([testEntity1, testEntity2, testEntity3]);
             var expected = [testEntity1, testEntity2];
             var actual = grid.getCellByWorldCoord(64, 62);
-            assert.deepEqual(actual, expected);
-        });
-
-        it('works as expected whe [x, y] array passed', function() {
-            var grid = new SpatialPartition();
-
-            var testEntity = {
-                name: 'Alice The Entity',
-                x: 0,
-                y: 51
-            };
-
-            var testEntity2 = {
-                name: 'John The Entity',
-                x: 2,
-                y: 50
-            };
-
-            var testEntity3 = {
-                name: 'Magda The Entity',
-                x: 15,
-                y: 61
-            };
-
-            grid.addAll([testEntity, testEntity2, testEntity3]);
-            var actual = grid.getCellByWorldCoord([1, 52]);
-            var expected = [testEntity, testEntity2];
             assert.deepEqual(actual, expected);
         });
     });

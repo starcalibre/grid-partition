@@ -52,25 +52,18 @@ SpatialPartition.prototype.addAll = function(entities) {
 };
 
 SpatialPartition.prototype.getCell = function(cellX, cellY) {
-    // assume length-2 array was passed
-    if(isNullOrUndefined(cellY)) {
-        return this._cells[cellX[1]][cellX[0]]
+    if(cellX < 0 || cellY < 0 || cellX > this.numberCellsX || cellY > this.numberCellsY) {
+        return null;
     }
     // otherwise assume individual accessors were passed
     return this._cells[cellY][cellX];
 };
 
 SpatialPartition.prototype.getCellByWorldCoord = function(posX, posY) {
-    var cellX, cellY;
-
-    // assume length 2 array passed
-    if(isNullOrUndefined(posY)) {
-        cellX = Math.floor(posX[0] / this.cellWidth);
-        cellY = Math.floor(posX[1] / this.cellHeight);
-    }
-    else {
-        cellX = Math.floor(posX / this.cellWidth);
-        cellY = Math.floor(posY / this.cellHeight);
+    var cellX = Math.floor(posX / this.cellWidth);
+    var cellY = Math.floor(posY / this.cellHeight);
+    if(cellX < 0 || cellY < 0 || cellX > this.numberCellsX || cellY > this.numberCellsY) {
+        return null;
     }
     return this.getCell(cellX, cellY);
 };
@@ -126,7 +119,7 @@ SpatialPartition.prototype.remove = function(entity) {
     if(isNullOrUndefined(cellCoord)) return false;
 
     // remove entity from cell
-    var cell = this.getCell(cellCoord);
+    var cell = this.getCell(cellCoord[0], cellCoord[1]);
     var index = cell.indexOf(entity);
     cell.splice(index, 1);
 

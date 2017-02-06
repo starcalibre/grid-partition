@@ -1,5 +1,6 @@
 var assert = require('assert');
-var SpatialPartition = require('../dist/spatialPartition');
+var SpatialPartition = require('../src/spatialPartition');
+var Util = require('../src/util');
 
 describe('SpatialPartition', function() {
     describe('constructor', function() {
@@ -306,7 +307,7 @@ describe('SpatialPartition', function() {
             };
 
             grid.addAll([testEntity, testEntity2]);
-            var lol = grid.remove(testEntity);
+            grid.remove(testEntity);
 
             var actual = [testEntity2];
             var expected = grid.getCell(0, 5);
@@ -428,6 +429,24 @@ describe('SpatialPartition', function() {
     });
 });
 
-describe('Miscellaneous', function() {
+describe('Utils', function() {
+    describe('is nullOrUndefined', function() {
+        it('returns true on null', function() {
+            var actual = Util.isNullOrUndefined(null);
+            var expected = true;
+            assert.equal(actual, expected);
+        });
 
+        it('returns true on undefined', function() {
+            var actual = Util.isNullOrUndefined(undefined);
+            var expected = true;
+            assert.equal(actual, expected);
+        });
+
+        it('returns false on numeric', function() {
+            var actual = Util.isNullOrUndefined(0);
+            var expected = false;
+            assert.equal(actual, expected);
+        });
+    });
 });

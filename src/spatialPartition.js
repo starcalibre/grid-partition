@@ -1,5 +1,6 @@
 'use strict';
 var Map = require('collections/map');
+var isNullOrUndefined = require('./util').isNullOrUndefined;
 
 function SpatialPartition(width, height, numberCellsX, numberCellsY) {
     this.width = width || 100;
@@ -49,7 +50,7 @@ SpatialPartition.prototype.addAll = function(entities) {
 
 SpatialPartition.prototype.getCell = function(cellX, cellY) {
     // assume length-2 array was passed
-    if(cellY == null || cellY == undefined) {
+    if(isNullOrUndefined(cellY)) {
         return this._cells[cellX[1]][cellX[0]]
     }
     // otherwise assume individual accessors were passed
@@ -58,7 +59,7 @@ SpatialPartition.prototype.getCell = function(cellX, cellY) {
 
 SpatialPartition.prototype.getCellByEntity = function(entity) {
     var query = this._entityMap.get(entity);
-    if(nullOrUndefined(query)) return null;
+    if(isNullOrUndefined(query)) return null;
     return this.getCell(query);
 };
 
@@ -66,7 +67,7 @@ SpatialPartition.prototype.getCellByWorldCoord = function(posX, posY) {
     var cellX, cellY;
 
     // assume length 2 array passed
-    if(posY === null || posY === undefined) {
+    if(isNullOrUndefined(posY)) {
         cellX = Math.floor(posX[0] / this.cellWidth);
         cellY = Math.floor(posX[1] / this.cellHeight);
     }
@@ -94,7 +95,7 @@ SpatialPartition.prototype.updateAll = function(entities) {
 
 SpatialPartition.prototype.remove = function(entity) {
     var cellCoord = this._entityMap.get(entity);
-    if(nullOrUndefined(cellCoord)) return false;
+    if(isNullOrUndefined(cellCoord)) return false;
 
     // remove entity from cell
     var cell = this.getCell(cellCoord);
@@ -108,7 +109,7 @@ SpatialPartition.prototype.remove = function(entity) {
 };
 
 SpatialPartition.prototype.x = function(_) {
-    if(_ != null) {
+    if(!isNullOrUndefined(_)) {
         this._x = _;
         return this;
     }
@@ -116,15 +117,11 @@ SpatialPartition.prototype.x = function(_) {
 };
 
 SpatialPartition.prototype.y = function(_) {
-    if(_ != null) {
+    if(!isNullOrUndefined(_)) {
         this._y = _;
         return this;
     }
     return this._y;
 };
-
-function nullOrUndefined(value) {
-    return value == null || value == undefined;
-}
 
 module.exports = SpatialPartition;

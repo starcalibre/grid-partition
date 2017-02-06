@@ -78,6 +78,31 @@ SpatialPartition.prototype.getCellByWorldCoord = function(posX, posY) {
     return this.getCell(cellX, cellY);
 };
 
+SpatialPartition.prototype.getNeighbourhood = function(cellX, cellY, radius) {
+    // default parameters
+    if(isNullOrUndefined(radius)) { radius = 1; }
+    if(radius < 0) { radius = 0; }
+
+    // array for all output entities
+    var result = [];
+
+    var i, j, currentCell;
+    for(i = (cellX - radius); i <= (cellX + radius); i++) {
+        for(j = (cellY - radius); j <= (cellY + radius); j++) {
+            currentCell = this.getCell(i, j);
+            result = result.concat(currentCell);
+        }
+    }
+
+    return result;
+};
+
+SpatialPartition.prototype.getNeighbourhoodByWorldCoord = function(posX, posY, radius) {
+    var cellX = Math.floor(posX / this.cellWidth);
+    var cellY = Math.floor(posY / this.cellHeight);
+    return this.getNeighbourhood(cellX, cellY, radius);
+};
+
 SpatialPartition.prototype.update = function(entity) {
     // remove the entity
     if(!this.remove(entity)) return false;

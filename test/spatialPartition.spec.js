@@ -1,6 +1,7 @@
 var assert = require('assert');
 var SpatialPartition = require('../src/spatialPartition');
 var Util = require('../src/util');
+var firstBy = require('thenby');
 
 describe('SpatialPartition', function() {
     describe('constructor', function() {
@@ -289,6 +290,208 @@ describe('SpatialPartition', function() {
             assert.deepEqual(actual, expected);
         });
     });
+    
+    describe('getNeighbourhood', function() {
+        it('returns the expected neighbourhood', function() {
+            var grid = new SpatialPartition();
+
+            // expected grid, * star if we expect this entity in
+            // our neighbourhood query
+
+            // [0, 0]
+            var testEntity01 = { x: 7, y: 5 };
+            grid.add(testEntity01);
+
+            // [1, 2]
+            var testEntity02 = { x: 17, y: 29 };
+            grid.add(testEntity02);
+
+            // [1, 3] *
+            var testEntity03 = { x: 11, y: 38 };
+            grid.add(testEntity03);
+
+            // [1, 3] *
+            var testEntity04 = { x: 17, y: 39 };
+            grid.add(testEntity04);
+
+            // [1, 4] *
+            var testEntity05 = { x: 17, y: 41 };
+            grid.add(testEntity05);
+
+            // [1, 5] *
+            var testEntity06 = { x: 18, y: 56 };
+            grid.add(testEntity06);
+
+            // [2, 2]
+            var testEntity07 = { x: 24, y: 28 };
+            grid.add(testEntity07);
+
+            // [2, 3] *
+            var testEntity08 = { x: 22, y: 36 };
+            grid.add(testEntity08);
+
+            // [2, 4] *
+            var testEntity09 = { x: 21, y: 45 };
+            grid.add(testEntity09);
+
+            // [2, 5] *
+            var testEntity10 = { x: 28, y: 56 };
+            grid.add(testEntity10);
+
+            // [3, 2]
+            var testEntity11 = { x: 38, y: 21 };
+            grid.add(testEntity11);
+
+            // [3, 3] *
+            var testEntity12 = { x: 39, y: 39 };
+            grid.add(testEntity12);
+
+            // [3, 4] *
+            var testEntity13 = { x: 34, y: 45 };
+            grid.add(testEntity13);
+
+            // [3, 4] *
+            var testEntity14 = { x: 34, y: 48 };
+            grid.add(testEntity14);
+
+            var radius = 1;
+            var actual = grid.getNeighbourhood(2, 4, radius);
+
+            var expected = [testEntity03, testEntity04, testEntity05, testEntity06,
+                testEntity08, testEntity09, testEntity10, testEntity12, testEntity13, testEntity14];
+
+            // sort both results for equality assertion in test
+            actual.sort(
+                firstBy(function(a, b) { return a.x - b.x; })
+                .thenBy(function(a, b) { return a.y - b.y }));
+
+            expected.sort(
+                firstBy(function(a, b) { return a.x - b.x; })
+                .thenBy(function(a, b) { return a.y - b.y }));
+
+            assert.deepEqual(actual, expected);
+        });
+
+        it('returns empty array where no neighbours', function() {
+            var grid = new SpatialPartition();
+
+            var testEntity1 = { x: 6, y: 8 };
+            grid.add(testEntity1);
+
+            var testEntity2 = { x: 27, y: 78 };
+            grid.add(testEntity2);
+
+            var testEntity3 = { x: 56, y: 39 };
+            grid.add(testEntity3);
+
+            var radius = 2;
+            var actual = grid.getNeighbourhood(2, 4, radius).length;
+            var expected = 0;
+
+            assert.equal(actual, expected);
+        });
+    });
+
+    describe('getNeighbourhoodByWorldCoord', function() {
+        it('returns the expected neighbourhood', function() {
+            var grid = new SpatialPartition();
+
+            // expected grid, * star if we expect this entity in
+            // our neighbourhood query
+
+            // [0, 0]
+            var testEntity01 = { x: 7, y: 5 };
+            grid.add(testEntity01);
+
+            // [1, 2]
+            var testEntity02 = { x: 17, y: 29 };
+            grid.add(testEntity02);
+
+            // [1, 3] *
+            var testEntity03 = { x: 11, y: 38 };
+            grid.add(testEntity03);
+
+            // [1, 3] *
+            var testEntity04 = { x: 17, y: 39 };
+            grid.add(testEntity04);
+
+            // [1, 4] *
+            var testEntity05 = { x: 17, y: 41 };
+            grid.add(testEntity05);
+
+            // [1, 5] *
+            var testEntity06 = { x: 18, y: 56 };
+            grid.add(testEntity06);
+
+            // [2, 2]
+            var testEntity07 = { x: 24, y: 28 };
+            grid.add(testEntity07);
+
+            // [2, 3] *
+            var testEntity08 = { x: 22, y: 36 };
+            grid.add(testEntity08);
+
+            // [2, 4] *
+            var testEntity09 = { x: 21, y: 45 };
+            grid.add(testEntity09);
+
+            // [2, 5] *
+            var testEntity10 = { x: 28, y: 56 };
+            grid.add(testEntity10);
+
+            // [3, 2]
+            var testEntity11 = { x: 38, y: 21 };
+            grid.add(testEntity11);
+
+            // [3, 3] *
+            var testEntity12 = { x: 39, y: 39 };
+            grid.add(testEntity12);
+
+            // [3, 4] *
+            var testEntity13 = { x: 34, y: 45 };
+            grid.add(testEntity13);
+
+            // [3, 4] *
+            var testEntity14 = { x: 34, y: 48 };
+            grid.add(testEntity14);
+
+            var radius = 1;
+            var actual = grid.getNeighbourhoodByWorldCoord(25, 49, radius);
+
+            var expected = [testEntity03, testEntity04, testEntity05, testEntity06,
+                testEntity08, testEntity09, testEntity10, testEntity12, testEntity13, testEntity14];
+
+            // sort both results for equality assertion in test
+            actual.sort(
+                firstBy(function(a, b) { return a.x - b.x; })
+                    .thenBy(function(a, b) { return a.y - b.y }));
+
+            expected.sort(
+                firstBy(function(a, b) { return a.x - b.x; })
+                    .thenBy(function(a, b) { return a.y - b.y }));
+
+            assert.deepEqual(actual, expected);
+        });
+
+        it('returns empty array where no neighbours', function() {
+            var grid = new SpatialPartition();
+
+            var testEntity1 = { x: 6, y: 8 };
+            grid.add(testEntity1);
+
+            var testEntity2 = { x: 27, y: 78 };
+            grid.add(testEntity2);
+
+            var testEntity3 = { x: 56, y: 39 };
+            grid.add(testEntity3);
+
+            var radius = 2;
+            var actual = grid.getNeighbourhoodByWorldCoord(25, 45, radius).length;
+            var expected = 0;
+
+            assert.equal(actual, expected);
+        });
+    });
 
     describe('remove', function() {
         it('removes elements as expected', function() {
@@ -430,7 +633,7 @@ describe('SpatialPartition', function() {
 });
 
 describe('Utils', function() {
-    describe('is nullOrUndefined', function() {
+    describe('isnullOrUndefined', function() {
         it('returns true on null', function() {
             var actual = Util.isNullOrUndefined(null);
             var expected = true;

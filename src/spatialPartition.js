@@ -30,6 +30,8 @@ function SpatialPartition(width, height, numberCellsX, numberCellsY) {
     }
 
     // map of entity references to cell co-ordinates
+    // we use this to keep track of entities after their co-ordinates
+    // have changed
     this._entityMap = new Map();
 }
 
@@ -56,12 +58,6 @@ SpatialPartition.prototype.getCell = function(cellX, cellY) {
     }
     // otherwise assume individual accessors were passed
     return this._cells[cellY][cellX];
-};
-
-SpatialPartition.prototype.getCellByEntity = function(entity) {
-    var query = this._entityMap.get(entity);
-    if(isNullOrUndefined(query)) return null;
-    return this.getCell(query);
 };
 
 SpatialPartition.prototype.getCellByWorldCoord = function(posX, posY) {

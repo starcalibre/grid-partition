@@ -181,32 +181,7 @@ describe('SpatialPartition', function() {
             assert.deepEqual(actual, expected);
         })
     });
-    
-    describe('getCellByEntity', function() {
-        it('returns the expected cell by the given entity', function() {
-            var grid = new SpatialPartition();
 
-            // both entities will reside in [0, 5]
-            var testEntity = {
-                name: 'Alice The Entity',
-                x: 0,
-                y: 51
-            };
-            var testEntity2 = {
-                name: 'Bob The Entity',
-                x: 2,
-                y: 51
-            };
-
-            grid.add(testEntity);
-            grid.add(testEntity2);
-
-            var expected = [testEntity, testEntity2];
-            var actual = grid.getCellByEntity(testEntity2);
-            assert.deepEqual(actual, expected);
-        });
-    });
-    
     describe('getCellByWorldCoord', function() {
         it('returns the expected entity from world co-ordinates', function() {
             var grid = new SpatialPartition();

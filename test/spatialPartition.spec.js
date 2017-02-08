@@ -652,4 +652,18 @@ describe('Utils', function() {
             assert.equal(actual, expected);
         });
     });
+    
+    describe('mod', function() {
+        it('finds correct modulo for positive numbers', function() {
+            var actual = Util.mod(62, 60);
+            var expected = 2;
+            assert.equal(actual, expected);
+        });
+
+        it('finds correct modulo for negative numbers', function() {
+            var actual = Util.mod(-2, 60);
+            var expected = 58;
+            assert.equal(actual, expected);
+        });
+    });
 });

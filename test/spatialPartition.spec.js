@@ -390,6 +390,83 @@ describe('SpatialPartition', function() {
 
             assert.equal(actual, expected);
         });
+
+        it('wrapping parameter works as expected when true', function() {
+            var grid = new SpatialPartition();
+
+            var testEntity1 = {
+                x: 2,
+                y: 4
+            };
+
+            var testEntity2 = {
+                x: 95,
+                y: 94
+            };
+
+            var testEntity3 = {
+                x: 2,
+                y: 94
+            };
+
+            var testEntity4 = {
+                x: 94,
+                y: 1
+            };
+
+            grid.addAll([testEntity1, testEntity2, testEntity3, testEntity4]);
+            var actual = grid.getNeighbourhood(0, 0, 1, true);
+            var expected = [testEntity1, testEntity2, testEntity3, testEntity4];
+
+            // sort both results for equality assertion in test
+            actual.sort(
+                firstBy(function(a, b) { return a.x - b.x; })
+                    .thenBy(function(a, b) { return a.y - b.y }));
+
+            expected.sort(
+                firstBy(function(a, b) { return a.x - b.x; })
+                    .thenBy(function(a, b) { return a.y - b.y }));
+
+            assert.deepEqual(actual, expected);
+        });
+
+        it('wrapping parameters works as expected when false', function() {
+            var grid = new SpatialPartition();
+
+            var testEntity1 = {
+                x: 2,
+                y: 4
+            };
+
+            var testEntity2 = {
+                x: 95,
+                y: 94
+            };
+
+            var testEntity3 = {
+                x: 2,
+                y: 94
+            };
+
+            var testEntity4 = {
+                x: 94,
+                y: 1
+            };
+
+            grid.addAll([testEntity1, testEntity2, testEntity3, testEntity4]);
+            var actual = grid.getNeighbourhood(0, 0, 1, false);
+            var expected = [testEntity1];
+
+            actual.sort(
+                firstBy(function(a, b) { return a.x - b.x; })
+                    .thenBy(function(a, b) { return a.y - b.y }));
+
+            expected.sort(
+                firstBy(function(a, b) { return a.x - b.x; })
+                    .thenBy(function(a, b) { return a.y - b.y }));
+
+            assert.deepEqual(actual, expected);
+        });
     });
 
     describe('getNeighbourhoodByWorldCoord', function() {

@@ -1,6 +1,7 @@
 'use strict';
 var Map = require('collections/map');
 var isNullOrUndefined = require('./util').isNullOrUndefined;
+var mod = require('./util').mod;
 
 function SpatialPartition(width, height, numberCellsX, numberCellsY) {
     this.width = width || 100;
@@ -78,18 +79,24 @@ SpatialPartition.prototype.getCellByWorldCoord = function(posX, posY) {
     return this.getCell(cellX, cellY);
 };
 
-SpatialPartition.prototype.getNeighbourhood = function(cellX, cellY, radius) {
+SpatialPartition.prototype.getNeighbourhood = function(cellX, cellY, radius, wrap) {
     // default parameters
     if(isNullOrUndefined(radius)) { radius = 1; }
     if(radius < 0) { radius = 0; }
+    if(!wrap) { wrap = false; }
 
     // array for all output entities
     var result = [];
 
-    var i, j, currentCell;
+    var i, j, iMod, jMod, currentCell;
     for(i = (cellX - radius); i <= (cellX + radius); i++) {
         for(j = (cellY - radius); j <= (cellY + radius); j++) {
-            currentCell = this.getCell(i, j);
+            iMod = mod(i, this.numberCellsX);
+            jMod = mod(j, this.numberCellsY);
+            if(!wrap && (iMod !== i || jMod !== j)) {
+                continue;
+            }
+            currentCell = this.getCell(iMod, jMod);
             result = result.concat(currentCell);
         }
     }

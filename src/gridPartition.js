@@ -29,19 +29,8 @@ function GridPartition(width, height, numberCellsX, numberCellsY) {
       return d.y;
     };
 
-    // initialise the cells
-    this._cells = new Array(this.numberCellsX);
-    for(var i = 0; i < this.numberCellsY; i++) {
-        this._cells[i] = new Array(this.numberCellsX);
-        for(var j = 0; j < this.numberCellsX; j++) {
-            this._cells[i][j] = [];
-        }
-    }
-
-    // map of entity references to cell co-ordinates
-    // we use this to keep track of entities after their co-ordinates
-    // have changed
-    this._entityMap = new Map();
+    // initialise the cells and create the entity map
+    this.clear();
 }
 
 /**
@@ -68,6 +57,21 @@ GridPartition.prototype.addAll = function(entities) {
     entities.forEach(function(entity) {
         this.add(entity);
     }.bind(this));
+};
+
+/**
+ * Clears the grid of all entities.
+ */
+GridPartition.prototype.clear = function() {
+    this._cells = new Array(this.numberCellsX);
+    for(var i = 0; i < this.numberCellsY; i++) {
+        this._cells[i] = new Array(this.numberCellsX);
+        for(var j = 0; j < this.numberCellsX; j++) {
+            this._cells[i][j] = [];
+        }
+    }
+
+    this._entityMap = new Map();
 };
 
 /**
@@ -173,9 +177,8 @@ GridPartition.prototype.update = function(entity) {
  * @param {Array} entities - An array of entities to update.
  */
 GridPartition.prototype.updateAll = function(entities) {
-    entities.forEach(function(entity) {
-        this.update(entity);
-    }.bind(this));
+    this.clear();
+    this.addAll(entities);
 };
 
 /**

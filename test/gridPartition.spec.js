@@ -156,6 +156,33 @@ describe('GridPartition', function() {
         });
     });
     
+    describe('clear', function() {
+        it('removes all entities as expected', function() {
+            var grid = new GridPartition();
+
+            var testEntity1 = {
+                name: 'Bob The Entity',
+                x: 11,
+                y: 12
+            };
+
+            var testEntity2 = {
+                name: 'Alice The Entity',
+                x: 12,
+                y: 13
+            };
+
+            grid.addAll([testEntity1, testEntity2]);
+            grid.clear();
+
+            var result = grid.getNeighbourhoodByWorldCoord(11, 13, 1);
+
+            var actual = result.length;
+            var expected = 0;
+            assert.equal(actual, expected);
+        });
+    });
+    
     describe('getCell', function() {
         var grid;
         var testEntity = {

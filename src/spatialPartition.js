@@ -13,10 +13,10 @@ var mod = require('./util').mod;
  * @constructor
  */
 function SpatialPartition(width, height, numberCellsX, numberCellsY) {
-    this.width = width || 100;
-    this.height = height || 100;
-    this.numberCellsX = numberCellsX || 10;
-    this.numberCellsY = numberCellsY || 10;
+    this.width = isNullOrUndefined(width) ? 100 : width;
+    this.height = isNullOrUndefined(height) ? 100 : height;
+    this.numberCellsX = isNullOrUndefined(numberCellsX) ? 10 : numberCellsX;
+    this.numberCellsY = isNullOrUndefined(numberCellsY) ? 10 : numberCellsY;
     this.cellWidth = this.width / this.numberCellsX;
     this.cellHeight = this.height / this.numberCellsY;
 
@@ -106,7 +106,8 @@ SpatialPartition.prototype.getCellByWorldCoord = function(posX, posY) {
  *
  * @param {number} cellX - The grid's x-coordinate.
  * @param {number} cellY - The grid's y-coordinate.
- * @param {number} radius - The search radius.
+ * @param {number} radius - The search radius. Default 1. Negative
+ *                          input will just default to 0.
  * @param {boolean} wrap - Whether or not to wrap the search radius around the space.
  * @returns {Array} - An array of entities belonging to the search neighbourhood. Default true.
  */
@@ -114,7 +115,7 @@ SpatialPartition.prototype.getNeighbourhood = function(cellX, cellY, radius, wra
     // default parameters
     if(isNullOrUndefined(radius)) { radius = 1; }
     if(radius < 0) { radius = 0; }
-    if(!wrap) { wrap = false; }
+    if(isNullOrUndefined(wrap)) { wrap = false; }
 
     // array for all output entities
     var result = [];

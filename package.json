@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "browserify --standalone GridPartition src/gridPartition.js -o dist/gridPartition.js && mocha",
-    "build": "npm run test && uglifyjs dist/gridPartition.js > dist/gridPartition.min.js"
+    "build": "npm run test && uglifyjs dist/gridPartition.js --mangle > dist/gridPartition.min.js"
   },
   "author": "Adrian Hecker",
   "license": "MIT",

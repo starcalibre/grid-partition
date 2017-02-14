@@ -4,7 +4,7 @@ var isNullOrUndefined = require('./util').isNullOrUndefined;
 var mod = require('./util').mod;
 
 /**
- * Creates a new SpatialPartition object.
+ * Creates a new GridPartition object.
  *
  * @param {number} width - The width of the world-space.
  * @param {number} height - The height of the world-space.
@@ -12,7 +12,7 @@ var mod = require('./util').mod;
  * @param numberCellsY - The number of cells to divide the y-dimension to.
  * @constructor
  */
-function SpatialPartition(width, height, numberCellsX, numberCellsY) {
+function GridPartition(width, height, numberCellsX, numberCellsY) {
     this.width = isNullOrUndefined(width) ? 100 : width;
     this.height = isNullOrUndefined(height) ? 100 : height;
     this.numberCellsX = isNullOrUndefined(numberCellsX) ? 10 : numberCellsX;
@@ -49,7 +49,7 @@ function SpatialPartition(width, height, numberCellsX, numberCellsY) {
  *
  * @param {Object} entity - The entity to add to the grid.
  */
-SpatialPartition.prototype.add = function(entity) {
+GridPartition.prototype.add = function(entity) {
     var posX = Math.floor(this._x.call(null, entity));
     var posY = Math.floor(this._y.call(null, entity));
     var cellX = Math.floor(posX / this.cellWidth);
@@ -64,7 +64,7 @@ SpatialPartition.prototype.add = function(entity) {
  *
  * @param {Array} entities - An array of entities to add to the grid.
  */
-SpatialPartition.prototype.addAll = function(entities) {
+GridPartition.prototype.addAll = function(entities) {
     entities.forEach(function(entity) {
         this.add(entity);
     }.bind(this));
@@ -78,7 +78,7 @@ SpatialPartition.prototype.addAll = function(entities) {
  * @param {number} cellY - The grid's y-coordinate.
  * @returns {Array} An array of entities belonging to this cell.
  */
-SpatialPartition.prototype.getCell = function(cellX, cellY) {
+GridPartition.prototype.getCell = function(cellX, cellY) {
     if(!this._isCellValid(cellX, cellY)) return null;
     return this._cells[cellY][cellX];
 };
@@ -92,7 +92,7 @@ SpatialPartition.prototype.getCell = function(cellX, cellY) {
  * @param {number} posY - The query y-position.
  * @returns {Array} - An array of entities belonging to the same cell.
  */
-SpatialPartition.prototype.getCellByWorldCoord = function(posX, posY) {
+GridPartition.prototype.getCellByWorldCoord = function(posX, posY) {
     var cellX = Math.floor(posX / this.cellWidth);
     var cellY = Math.floor(posY / this.cellHeight);
     return this.getCell(cellX, cellY);
@@ -111,7 +111,7 @@ SpatialPartition.prototype.getCellByWorldCoord = function(posX, posY) {
  * @param {boolean} wrap - Whether or not to wrap the search radius around the space.
  * @returns {Array} - An array of entities belonging to the search neighbourhood. Default true.
  */
-SpatialPartition.prototype.getNeighbourhood = function(cellX, cellY, radius, wrap) {
+GridPartition.prototype.getNeighbourhood = function(cellX, cellY, radius, wrap) {
     // default parameters
     if(isNullOrUndefined(radius)) { radius = 1; }
     if(radius < 0) { radius = 0; }
@@ -146,7 +146,7 @@ SpatialPartition.prototype.getNeighbourhood = function(cellX, cellY, radius, wra
  * @param {boolean} wrap - Whether or not to wrap the search radius around the space.
  * @returns {Array} - An array of entities belonging to the search neighbourhood.
  */
-SpatialPartition.prototype.getNeighbourhoodByWorldCoord = function(posX, posY, radius, wrap) {
+GridPartition.prototype.getNeighbourhoodByWorldCoord = function(posX, posY, radius, wrap) {
     var cellX = Math.floor(Math.floor(posX) / this.cellWidth);
     var cellY = Math.floor(Math.floor(posY) / this.cellHeight);
     return this.getNeighbourhood(cellX, cellY, radius, wrap);
@@ -158,7 +158,7 @@ SpatialPartition.prototype.getNeighbourhoodByWorldCoord = function(posX, posY, r
  * @param {Object} entity - The entity to update.
  * @returns {boolean} - True if an update was successful.
  */
-SpatialPartition.prototype.update = function(entity) {
+GridPartition.prototype.update = function(entity) {
     // remove the entity
     if(!this.remove(entity)) return false;
 
@@ -172,7 +172,7 @@ SpatialPartition.prototype.update = function(entity) {
  *
  * @param {Array} entities - An array of entities to update.
  */
-SpatialPartition.prototype.updateAll = function(entities) {
+GridPartition.prototype.updateAll = function(entities) {
     entities.forEach(function(entity) {
         this.update(entity);
     }.bind(this));
@@ -184,7 +184,7 @@ SpatialPartition.prototype.updateAll = function(entities) {
  * @param entity
  * @returns {boolean}
  */
-SpatialPartition.prototype.remove = function(entity) {
+GridPartition.prototype.remove = function(entity) {
     var cellCoord = this._entityMap.get(entity);
     if(isNullOrUndefined(cellCoord)) return false;
 
@@ -204,9 +204,9 @@ SpatialPartition.prototype.remove = function(entity) {
  * This defaults to the x property of the entity.
  *
  * @param {Function} _ - A function returning the x-coordinate for the entity.
- * @returns {SpatialPartition} - Returns this SpatialPartition.
+ * @returns {GridPartition} - Returns this GridPartition.
  */
-SpatialPartition.prototype.x = function(_) {
+GridPartition.prototype.x = function(_) {
     if(!isNullOrUndefined(_)) {
         this._x = _;
         return this;
@@ -219,9 +219,9 @@ SpatialPartition.prototype.x = function(_) {
  * This defaults to the y property of the entity.
  *
  * @param {Function} _ - A function returning the y-coordinate for the entity.
- * @returns {SpatialPartition} - Returns this SpatialPartition.
+ * @returns {GridPartition} - Returns this GridPartition.
  */
-SpatialPartition.prototype.y = function(_) {
+GridPartition.prototype.y = function(_) {
     if(!isNullOrUndefined(_)) {
         this._y = _;
         return this;
@@ -237,8 +237,8 @@ SpatialPartition.prototype.y = function(_) {
  * @returns {boolean} - True if valid, false otherwise.
  * @private
  */
-SpatialPartition.prototype._isCellValid = function(cellX, cellY) {
+GridPartition.prototype._isCellValid = function(cellX, cellY) {
     return (cellX >= 0 && cellY >= 0 && cellX < this.numberCellsX && cellY < this.numberCellsY);
 };
 
-module.exports = SpatialPartition;
+module.exports = GridPartition;

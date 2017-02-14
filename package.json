@@ -1,11 +1,11 @@
 {
-  "name": "spatial-partition",
+  "name": "grid-partition",
   "version": "1.0.0",
-  "description": "2D Spatial Partitioning",
+  "description": "2D Grid Partitioning",
   "main": "index.js",
   "scripts": {
-    "test": "browserify --standalone SpatialPartition src/spatialPartition.js -o dist/spatialPartition.js && mocha",
-    "build": "npm run test && uglifyjs dist/spatialPartition.js > dist/spatialPartition.min.js"
+    "test": "browserify --standalone GridPartition src/gridPartition.js -o dist/gridPartition.js && mocha",
+    "build": "npm run test && uglifyjs dist/gridPartition.js > dist/gridPartition.min.js"
   },
   "author": "Adrian Hecker",
   "license": "MIT",

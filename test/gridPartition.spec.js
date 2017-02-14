@@ -1,14 +1,14 @@
 var assert = require('assert');
-var SpatialPartition = require('../src/spatialPartition');
+var GridPartition = require('../src/gridPartition');
 var Util = require('../src/util');
 var firstBy = require('thenby');
 
-describe('SpatialPartition', function() {
+describe('GridPartition', function() {
     describe('constructor', function() {
         var grid;
 
         beforeEach(function() {
-            grid = new SpatialPartition();
+            grid = new GridPartition();
         });
 
         it('should have default width 100', function() {
@@ -36,14 +36,14 @@ describe('SpatialPartition', function() {
         });
 
         it('should have expected cell width for custom parameters', function() {
-            var testGrid = new SpatialPartition(90, 80, 3, 4);
+            var testGrid = new GridPartition(90, 80, 3, 4);
             var expected = 30;
             var actual = testGrid.cellWidth;
             assert.strictEqual(actual, expected);
         });
 
         it('should have expected cell height for custom parameters', function() {
-            var testGrid = new SpatialPartition(90, 80, 3, 4);
+            var testGrid = new GridPartition(90, 80, 3, 4);
             var expected = 20;
             var actual = testGrid.cellHeight;
             assert.strictEqual(actual, expected);
@@ -54,7 +54,7 @@ describe('SpatialPartition', function() {
         it('should add the new entity to the expected cell', function() {
             // test entity, on a 100x100 space partitioned unto 10x10 cells,
             // the entity will live at the grid [0, 5]
-            var grid = new SpatialPartition();
+            var grid = new GridPartition();
 
             var testEntity = {
                 name: 'Alice The Entity',
@@ -70,7 +70,7 @@ describe('SpatialPartition', function() {
 
         it('should add the new entity to expected cell with non-default params', function() {
             // create a 90 * 80 space partitioned 3 * 4 grids
-            var grid = new SpatialPartition(90, 80, 3, 4);
+            var grid = new GridPartition(90, 80, 3, 4);
 
             // the entity should live at [1, 3]
             var testEntity = {
@@ -87,7 +87,7 @@ describe('SpatialPartition', function() {
         });
 
         it('addition works custom x, y accessors', function() {
-            var grid = new SpatialPartition()
+            var grid = new GridPartition()
                 .x(function(d) {
                     return d.crazy.nesting.what;
                 })
@@ -111,7 +111,7 @@ describe('SpatialPartition', function() {
         });
 
         it('updates the entity map as expected', function() {
-            var grid = new SpatialPartition()
+            var grid = new GridPartition()
                 .x(function(d) {
                     return d.position.x;
                 })
@@ -134,7 +134,7 @@ describe('SpatialPartition', function() {
     
     describe('addAll', function() {
         it('adds multiple entities', function() {
-            var grid = new SpatialPartition();
+            var grid = new GridPartition();
 
             // expect both of these be assigned to grid [1, 6]
             var testEntity1 = {
@@ -165,7 +165,7 @@ describe('SpatialPartition', function() {
         };
         
         beforeEach(function() {
-            grid = new SpatialPartition();
+            grid = new GridPartition();
             grid.add(testEntity);
         });
 
@@ -178,7 +178,7 @@ describe('SpatialPartition', function() {
 
     describe('getCellByWorldCoord', function() {
         it('returns the expected entity from world co-ordinates', function() {
-            var grid = new SpatialPartition();
+            var grid = new GridPartition();
 
             var testEntity = {
                 name: 'Alice The Entity',
@@ -205,7 +205,7 @@ describe('SpatialPartition', function() {
         });
 
         it('returns expected entities from world co-ordinates (custom params)', function() {
-            var grid = new SpatialPartition(312, 450, 10, 15);
+            var grid = new GridPartition(312, 450, 10, 15);
 
             // expect first two to map to 2, 2
             var testEntity1 = {
@@ -235,7 +235,7 @@ describe('SpatialPartition', function() {
     
     describe('getNeighbourhood', function() {
         it('returns the expected neighbourhood', function() {
-            var grid = new SpatialPartition();
+            var grid = new GridPartition();
 
             // expected grid, * star if we expect this entity in
             // our neighbourhood query
@@ -315,7 +315,7 @@ describe('SpatialPartition', function() {
         });
 
         it('returns empty array where no neighbours', function() {
-            var grid = new SpatialPartition();
+            var grid = new GridPartition();
 
             var testEntity1 = { x: 6, y: 8 };
             grid.add(testEntity1);
@@ -334,7 +334,7 @@ describe('SpatialPartition', function() {
         });
 
         it('wrapping parameter works as expected when true', function() {
-            var grid = new SpatialPartition();
+            var grid = new GridPartition();
 
             var testEntity1 = {
                 x: 2,
@@ -373,7 +373,7 @@ describe('SpatialPartition', function() {
         });
 
         it('wrapping parameters works as expected when false', function() {
-            var grid = new SpatialPartition();
+            var grid = new GridPartition();
 
             var testEntity1 = {
                 x: 2,
@@ -413,7 +413,7 @@ describe('SpatialPartition', function() {
 
     describe('getNeighbourhoodByWorldCoord', function() {
         it('returns the expected neighbourhood', function() {
-            var grid = new SpatialPartition();
+            var grid = new GridPartition();
 
             // expected grid, * star if we expect this entity in
             // our neighbourhood query
@@ -493,7 +493,7 @@ describe('SpatialPartition', function() {
         });
 
         it('returns empty array where no neighbours', function() {
-            var grid = new SpatialPartition();
+            var grid = new GridPartition();
 
             var testEntity1 = { x: 6, y: 8 };
             grid.add(testEntity1);
@@ -514,7 +514,7 @@ describe('SpatialPartition', function() {
 
     describe('remove', function() {
         it('removes elements as expected', function() {
-            var grid = new SpatialPartition();
+            var grid = new GridPartition();
 
             // both entities will reside in [0, 5]
             var testEntity = {
@@ -537,7 +537,7 @@ describe('SpatialPartition', function() {
         });
         
         it('returns true on successful removal', function() {
-            var grid = new SpatialPartition(200, 200, 5, 5);
+            var grid = new GridPartition(200, 200, 5, 5);
 
             var testEntity = {
                 name: 'Rostislav The Entity',
@@ -551,7 +551,7 @@ describe('SpatialPartition', function() {
         });
 
         it('returns false on failed removal', function() {
-            var grid = new SpatialPartition();
+            var grid = new GridPartition();
             var testEntity = {
                 name: 'Bobby the Entity',
                 x: 12,
@@ -565,7 +565,7 @@ describe('SpatialPartition', function() {
     
     describe('update', function() {
         it('updates the entity as expected', function() {
-            var grid = new SpatialPartition();
+            var grid = new GridPartition();
 
             // will be in [0, 5] initially
             var testEntity = {
@@ -585,7 +585,7 @@ describe('SpatialPartition', function() {
         });
         
         it('returns true on successful update', function() {
-            var grid = new SpatialPartition();
+            var grid = new GridPartition();
 
             // will be in [0, 5] initially
             var testEntity = {
@@ -603,7 +603,7 @@ describe('SpatialPartition', function() {
         });
         
         it('returns false on failed update', function() {
-            var grid = new SpatialPartition();
+            var grid = new GridPartition();
 
             var testEntity = {
                 name: 'Cirillo The Entity',
@@ -618,7 +618,7 @@ describe('SpatialPartition', function() {
     
     describe('updateAll', function() {
         it('updates multiple entities as expected', function() {
-            var grid = new SpatialPartition(800, 600, 16, 12);
+            var grid = new GridPartition(800, 600, 16, 12);
 
             // test will be assigned to [0, 0]
             var testEntity1 = {
@@ -654,7 +654,7 @@ describe('SpatialPartition', function() {
         var grid;
 
         beforeEach(function() {
-            grid = new SpatialPartition();
+            grid = new GridPartition();
         });
 
         it('returns true when cell valid', function() {
